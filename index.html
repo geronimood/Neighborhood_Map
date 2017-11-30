@@ -1,34 +1,37 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <title>Neighborhood Map</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <title>Neighborhood Map</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
 
-<body>
+  <body>
+    <div class="container">
+      <h1>Neighborhood Map</h1>
 
-  <h1>Neighborhood Map</h1>
+      <input id="textbox" type="text" placeholder="Location">
+      <input id="filter" type="button" value="Filter">
 
-  <input id="textbox" type="text" placeholder="Location">
-  <input id="filter" type="button" value="Filter">
+      <div id="location_list">
+        <ul>
+          <li>Entry 1</li>
+          <li>Entry 2</li>
+          <li>Entry 3</li>
+          <li>Entry 4</li>
+          <li>Entry 5</li>
+        </ul>
+      </div>
 
-  <div id="location_list">
-    <ul>
-      <li>Entry 1</li>
-      <li>Entry 2</li>
-      <li>Entry 3</li>
-      <li>Entry 4</li>
-      <li>Entry 5</li>
-    </ul>
-  </div>
+      <div id="map"></div>
+    </div>
 
-  <script src="js/script.js"></script>
+    <script src="js/script.js"></script>
 
-  <script async defer
-      src=
-      "https://maps.googleapis.com/maps/api/js?&key=AIzaSyCPtwQGiZtWghfJCpQokY3U2syuQHr5aDM&v=3&callback=initMap">
-  </script>
+    <script async defer
+        src=
+        "https://maps.googleapis.com/maps/api/js?libraries=geometry&key=AIzaSyCPtwQGiZtWghfJCpQokY3U2syuQHr5aDM&v=3&callback=initMap">
+    </script>
 
 </body>
 
