@@ -1,4 +1,5 @@
 var map;
+var markers = [];
 
 var initialLocations = [
   {
@@ -40,7 +41,26 @@ var Location = function(data) {
   this.location = data.location;
 
   this.visible = ko.observable(true);
-};
+
+  var defaultIcon = makeMarkerIcon('0091ff');
+
+  var highlightedIcon = makeMarkerIcon('FFFF24');
+
+  for (var i = 0; i < initialLocations.length; i++) {
+    var position = initialLocations[i].location;
+    var title = initialLocations[i].title;
+    var marker = new google.maps.Marker({
+      map: map,
+      position: position,
+      title: title,
+      icon: defaultIcon,
+      animation: google.maps.Animation.DROP,
+      id: i
+    });
+
+    markers.push(marker);
+  };
+}
 
 var ViewModel = function() {
   var self = this;
@@ -50,4 +70,15 @@ var ViewModel = function() {
   initialLocations.forEach(function(locationItem) {
     self.locationList.push(new Location(locationItem));
   });
+};
+
+function makeMarkerIcon(markerColor) {
+  var markerImage = new google.maps.MarkerImage(
+    'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|' + markerColor +
+    '|40|_|%E2%80%A2',
+    new google.maps.Size(21,34),
+    new google.maps.Point(0,0),
+    new google.maps.Point(10,34),
+    new google.maps.Size(21,34));
+  return markerImage;
 };
