@@ -48,32 +48,25 @@ var Location = function(data) {
 
   var highlightedIcon = makeMarkerIcon('FFFF24');
 
-  for (var i = 0; i < initialLocations.length; i++) {
-    var position = initialLocations[i].location;
-    var title = initialLocations[i].title;
-    var marker = new google.maps.Marker({
+  this.marker = new google.maps.Marker({
       map: map,
-      position: position,
-      title: title,
+      position: this.location,
+      title: this.title,
       icon: defaultIcon,
       animation: google.maps.Animation.DROP,
-      id: i
-    });
+  });
 
-    markers.push(marker);
+  this.marker.addListener('click', function() {
+    populateInfoWindow(this, largeInfoWindow);
+  });
 
-    marker.addListener('click', function() {
-      populateInfoWindow(this, largeInfoWindow);
-    });
+  this.marker.addListener('mouseover', function() {
+    this.setIcon(highlightedIcon);
+  });
 
-    marker.addListener('mouseover', function() {
-      this.setIcon(highlightedIcon);
-    });
-
-    marker.addListener('mouseout', function() {
-      this.setIcon(defaultIcon);
-    });
-  };
+  this.marker.addListener('mouseout', function() {
+    this.setIcon(defaultIcon);
+  });
 }
 
 var ViewModel = function() {
