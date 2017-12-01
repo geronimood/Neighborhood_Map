@@ -1,4 +1,5 @@
 var map;
+var largeInfoWindow
 var markers = [];
 
 var initialLocations = [
@@ -31,6 +32,7 @@ function initMap() {
     zoom: 13,
     mapTypeControl: false
   });
+  largeInfoWindow = new google.maps.InfoWindow();
   ko.applyBindings(new ViewModel());
 };
 
@@ -59,6 +61,18 @@ var Location = function(data) {
     });
 
     markers.push(marker);
+
+    marker.addListener('click', function() {
+      populateInfoWindow(this, largeInfoWindow);
+    });
+
+    marker.addListener('mouseover', function() {
+      this.setIcon(highlightedIcon);
+    });
+
+    marker.addListener('mouseout', function() {
+      this.setIcon(defaultIcon);
+    });
   };
 }
 
@@ -82,3 +96,14 @@ function makeMarkerIcon(markerColor) {
     new google.maps.Size(21,34));
   return markerImage;
 };
+
+function populateInfoWindow(marker, infowindow) {
+  if (infowindow.marker != marker) {
+    infowindow.marker = marker;
+    infowindow.setContent('<div>' + marker.title);
+    infowindow.addListener('closeclick', function() {
+      infowindow.setMarker = null;
+    });
+    infowindow.open(map, marker);
+  }
+}
