@@ -41,12 +41,46 @@ var Location = function(data) {
 
   this.title = data.title;
   this.location = data.location;
+  this.uri = '';
 
   this.visible = ko.observable(true);
 
   var defaultIcon = makeMarkerIcon('0091ff');
 
   var highlightedIcon = makeMarkerIcon('FFFF24');
+
+  // Wikipedia AJAX request
+  var wiki_url = "https://en.wikipedia.org/w/api.php"
+  wiki_url += '?' + $.param({
+    'action': "opensearch",
+    'search': this.title,
+    'format': "json",
+    'callback': "wikiCallback"
+  });
+
+  var wikiRequestTimeout = setTimeout(function(){
+    $wikiElem.text("failed to get wikipedia resources");
+  }, 8000);
+
+
+  $.ajax({
+    url: wiki_url,
+    dataType: 'jsonp',
+    // jsonp: "callback",
+    success: function( response ) {
+      var articleList = response[1];
+      var articleStr = articleList[0];
+      self.uri = 'https://en.wikipedia.org/wiki/' + articleStr;
+
+      //for (var i=0; i < articleList.length; i++) {
+      //  articleStr = articleList[i];
+      //  var url = 'https://en.wikipedia.org/wiki/' + articleStr;
+      //  $wikiElem.append('<li><a href="' + url + '">' + articleStr + '</a></li>');
+      //};
+
+      clearTimeout(wikiRequestTimeout);
+    }
+  });
 
   this.marker = new google.maps.Marker({
       map: map,
@@ -57,7 +91,7 @@ var Location = function(data) {
   });
 
   this.marker.addListener('click', function() {
-    populateInfoWindow(this, largeInfoWindow);
+    populateInfoWindow(this, self.uri, largeInfoWindow);
   });
 
   this.marker.addListener('mouseover', function() {
@@ -102,7 +136,7 @@ function makeMarkerIcon(markerColor) {
   return markerImage;
 };
 
-function populateInfoWindow(marker, infowindow) {
+function populateInfoWindow(marker, uri, infowindow) {
   if (infowindow.marker != marker) {
     infowindow.marker = marker;
     infowindow.setContent('');
@@ -117,7 +151,7 @@ function populateInfoWindow(marker, infowindow) {
         var nearStreetViewLocation = data.location.latLng;
         var heading = google.maps.geometry.spherical.computeHeading(
           nearStreetViewLocation, marker.position);
-          infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
+          infowindow.setContent('<div>' + '<h3>' + marker.title + '</h3>' + '<a href="' + uri + '">' + '>Wikipedia Article</a>' + '<br>' + '</div><div id="pano"></div>');
           var panoramaOptions = {
             position: nearStreetViewLocation,
             pov: {
