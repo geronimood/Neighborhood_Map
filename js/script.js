@@ -71,6 +71,14 @@ var Location = function(data) {
   this.showInfoWindow = function() {
     google.maps.event.trigger(self.marker, 'click');
   };
+
+  this.highlightMarker = function() {
+    google.maps.event.trigger(self.marker, 'mouseover');
+  };
+
+  this.lowlightMarker = function() {
+    google.maps.event.trigger(self.marker, 'mouseout');
+  };
 }
 
 var ViewModel = function() {

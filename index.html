@@ -15,14 +15,16 @@
 
       <div class="list">
           <ul data-bind="foreach: locationList">
-              <li data-bind="text: title, click: showInfoWindow"></li>
+              <li data-bind="text: title, click: showInfoWindow, event: { mouseover: highlightMarker, mouseout: lowlightMarker }"></li>
           </ul>
       </div>
 
       <div id="map"></div>
     </div>
 
-    <script src="js/lib/knockout.min.js"></script>
+    <script src="js/lib/knockout-3.2.0.js"></script>
+
+    <script src="js/lib/jquery.min.js"></script>
 
     <script src="js/script.js"></script>
 
