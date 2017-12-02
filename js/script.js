@@ -69,7 +69,7 @@ var Location = function(data) {
   });
 
   this.showInfoWindow = function() {
-    this.marker.setIcon(highlightedIcon);
+    google.maps.event.trigger(self.marker, 'click');
   };
 }
 
