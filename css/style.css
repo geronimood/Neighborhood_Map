@@ -6,7 +6,7 @@
   right: 0px;
 }
 
-#location_list {
-  font-family: Arial, sans-serif;
-  font-weight: bold;
+#pano {
+  width: 200px;
+  height: 200px;
 }
