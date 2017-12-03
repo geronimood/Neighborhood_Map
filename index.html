@@ -10,11 +10,12 @@
     <div class="container">
       <h1>Neighborhood Map</h1>
 
-      <input id="textbox" type="text" placeholder="Location">
-      <input id="filter" type="button" value="Filter">
+      <form>
+        <input id="textbox" type="text" placeholder="Search Location" data-bind="textInput: filterInput, valueUpdate: afterkeydown">
+      </form>
 
       <div class="list">
-          <ul data-bind="foreach: locationList">
+          <ul data-bind="foreach: filterList">
               <li data-bind="text: title, click: showInfoWindow, event: { mouseover: highlightMarker, mouseout: lowlightMarker }"></li>
           </ul>
       </div>

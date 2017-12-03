@@ -123,6 +123,26 @@ var ViewModel = function() {
   initialLocations.forEach(function(locationItem) {
     self.locationList.push(new Location(locationItem));
   });
+
+  this.filterInput = ko.observable('');
+
+
+  this.filterList = ko.computed(function() {
+    var filterItem = this.filterInput().toLowerCase();
+    if (!filterItem) {
+      this.locationList().forEach(function(locationItem) {
+        locationItem.visible(true);
+      });
+      return this.locationList();
+    } else {
+        return ko.utils.arrayFilter(this.locationList(), function(locationItem) {
+          var lowerCaseTitle = locationItem.title.toLowerCase();
+          var result = (lowerCaseTitle.search(filterItem) >= 0);
+          locationItem.visible(result);
+          return result;
+        });
+      }
+    }, this);
 };
 
 function makeMarkerIcon(markerColor) {
