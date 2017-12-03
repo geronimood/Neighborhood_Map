@@ -26,10 +26,78 @@ var initialLocations = [
 ];
 
 function initMap() {
+  var styles = [
+    {
+      featureType: 'water',
+      stylers: [
+        { color: '#19a0d8' }
+      ]
+    },{
+      featureType: 'administrative',
+      elementType: 'labels.text.stroke',
+      stylers: [
+        { color: '#ffffff' },
+        { weight: 6 }
+      ]
+    },{
+      featureType: 'administrative',
+      elementType: 'labels.text.fill',
+      stylers: [
+        { color: '#e85113' }
+      ]
+    },{
+      featureType: 'road.highway',
+      elementType: 'geometry.stroke',
+      stylers: [
+        { color: '#efe9e4' },
+        { lightness: -40 }
+      ]
+    },{
+      featureType: 'transit.station',
+      stylers: [
+        { weight: 9 },
+        { hue: '#e85113' }
+      ]
+    },{
+      featureType: 'road.highway',
+      elementType: 'labels.icon',
+      stylers: [
+        { visibility: 'off' }
+      ]
+    },{
+      featureType: 'water',
+      elementType: 'labels.text.stroke',
+      stylers: [
+        { lightness: 100 }
+      ]
+    },{
+      featureType: 'water',
+      elementType: 'labels.text.fill',
+      stylers: [
+        { lightness: -100 }
+      ]
+    },{
+      featureType: 'poi',
+      elementType: 'geometry',
+      stylers: [
+        { visibility: 'on' },
+        { color: '#f0e4d3' }
+      ]
+    },{
+      featureType: 'road.highway',
+      elementType: 'geometry.fill',
+      stylers: [
+        { color: '#efe9e4' },
+        { lightness: -25 }
+      ]
+    }
+  ];
+
   // Constructor creates a new map.
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 52.520008, lng: 13.404954},
     zoom: 13,
+    styles: styles,
     mapTypeControl: false
   });
   largeInfoWindow = new google.maps.InfoWindow();
@@ -41,7 +109,7 @@ var Location = function(data) {
 
   this.title = data.title;
   this.location = data.location;
-  this.uri = '';
+  this.wikiArticles = '<ul id="wiki">';
 
   this.visible = ko.observable(true);
 
@@ -59,7 +127,7 @@ var Location = function(data) {
   });
 
   var wikiRequestTimeout = setTimeout(function(){
-    $wikiElem.text("failed to get wikipedia resources");
+    alert("failed to get wikipedia resources");
   }, 8000);
 
 
@@ -69,15 +137,13 @@ var Location = function(data) {
     // jsonp: "callback",
     success: function( response ) {
       var articleList = response[1];
-      var articleStr = articleList[0];
-      self.uri = 'https://en.wikipedia.org/wiki/' + articleStr;
 
-      //for (var i=0; i < articleList.length; i++) {
-      //  articleStr = articleList[i];
-      //  var url = 'https://en.wikipedia.org/wiki/' + articleStr;
-      //  $wikiElem.append('<li><a href="' + url + '">' + articleStr + '</a></li>');
-      //};
-
+      for (var i=0; i < articleList.length; i++) {
+        articleStr = articleList[i];
+        var url = 'https://en.wikipedia.org/wiki/' + articleStr;
+        self.wikiArticles += '<li><a href="' + url + '">' + articleStr + '</a></li>';
+      };
+      self.wikiArticles += '</ul>';
       clearTimeout(wikiRequestTimeout);
     }
   });
@@ -91,7 +157,7 @@ var Location = function(data) {
   });
 
   this.marker.addListener('click', function() {
-    populateInfoWindow(this, self.uri, largeInfoWindow);
+    populateInfoWindow(this, self.wikiArticles, largeInfoWindow);
   });
 
   this.marker.addListener('mouseover', function() {
@@ -162,7 +228,7 @@ function makeMarkerIcon(markerColor) {
   return markerImage;
 };
 
-function populateInfoWindow(marker, uri, infowindow) {
+function populateInfoWindow(marker, wikiArticles, infowindow) {
   if (infowindow.marker != marker) {
     infowindow.marker = marker;
     infowindow.setContent('');
@@ -177,7 +243,7 @@ function populateInfoWindow(marker, uri, infowindow) {
         var nearStreetViewLocation = data.location.latLng;
         var heading = google.maps.geometry.spherical.computeHeading(
           nearStreetViewLocation, marker.position);
-          infowindow.setContent('<div>' + '<h3>' + marker.title + '</h3>' + '<a href="' + uri + '">' + '>Wikipedia Article</a>' + '<br>' + '</div><div id="pano"></div>');
+          infowindow.setContent('<div>' + '<h3>' + marker.title + '</h3>' + '<h4>Relevant Wikipedia Articles</h4>' + wikiArticles + '</div><div id="pano"></div>');
           var panoramaOptions = {
             position: nearStreetViewLocation,
             pov: {
@@ -195,3 +261,7 @@ function populateInfoWindow(marker, uri, infowindow) {
     infowindow.open(map, marker);
   }
 };
+
+function googleError() {
+  alert('There went something wrong when loading Google Maps - please try again!');
+}

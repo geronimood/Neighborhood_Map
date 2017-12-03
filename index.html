@@ -3,7 +3,9 @@
   <head>
     <meta charset="UTF-8">
     <title>Neighborhood Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" media="screen and (max-width: 660px)" href="css/mobile.css" />
   </head>
 
   <body>
@@ -20,7 +22,7 @@
           </ul>
       </div>
 
-      <div id="map"></div>
+      <div id="map">There went something wrong when loading Google Maps - please try again!</div>
     </div>
 
     <script src="js/lib/knockout-3.2.0.js"></script>
@@ -31,7 +33,7 @@
 
     <script async defer
         src=
-        "https://maps.googleapis.com/maps/api/js?libraries=geometry&key=AIzaSyCPtwQGiZtWghfJCpQokY3U2syuQHr5aDM&v=3&callback=initMap">
+        "https://maps.googleapis.com/maps/api/js?libraries=geometry&key=AIzaSyCPtwQGiZtWghfJCpQokY3U2syuQHr5aDM&v=3&callback=initMap" onerror="googleError()">
     </script>
 
 </body>

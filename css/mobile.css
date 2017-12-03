@@ -11,7 +11,7 @@ h3,
 h4,
 li
  {
-  color: #2d3c49;
+  color: red;
   font-weight: normal;
 }
 
@@ -25,10 +25,10 @@ li:hover {
 
 #map {
   bottom:0px;
-  height: 100%;
-  left: 40%;
+  height: 60%;
+  left: 0%;
   position: absolute;
-  right: 0px;
+
 }
 
 #pano {
