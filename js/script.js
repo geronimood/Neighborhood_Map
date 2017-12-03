@@ -83,7 +83,7 @@ var Location = function(data) {
   });
 
   this.marker = new google.maps.Marker({
-      map: map,
+      //map: map,
       position: this.location,
       title: this.title,
       icon: defaultIcon,
@@ -132,6 +132,7 @@ var ViewModel = function() {
     if (!filterItem) {
       this.locationList().forEach(function(locationItem) {
         locationItem.visible(true);
+        locationItem.marker.setMap(map);
       });
       return this.locationList();
     } else {
@@ -139,6 +140,11 @@ var ViewModel = function() {
           var lowerCaseTitle = locationItem.title.toLowerCase();
           var result = (lowerCaseTitle.search(filterItem) >= 0);
           locationItem.visible(result);
+          if (result) {
+            locationItem.marker.setMap(map);
+          } else {
+            locationItem.marker.setMap(null);
+          }
           return result;
         });
       }
