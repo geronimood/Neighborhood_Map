@@ -12,21 +12,26 @@
     <div class="container">
       <h1>Neighborhood Map</h1>
 
+      <!-- Filter text box -->
       <form>
         <input id="textbox" type="text" placeholder="Search Location" data-bind="textInput: filterInput, valueUpdate: afterkeydown">
       </form>
 
+      <!-- Location list - allowing for filtering -->
       <div class="list">
           <ul data-bind="foreach: filterList">
               <li data-bind="text: title, click: showInfoWindow, event: { mouseover: highlightMarker, mouseout: lowlightMarker }"></li>
           </ul>
       </div>
 
+      <!-- Google map is loaded here - error message is shown if something goes wrong -->
       <div id="map">There went something wrong when loading Google Maps - please try again!</div>
     </div>
 
+    <!-- knockout js requirements -->
     <script src="js/lib/knockout-3.2.0.js"></script>
 
+    <!-- jquery requirements -->
     <script src="js/lib/jquery.min.js"></script>
 
     <script src="js/script.js"></script>

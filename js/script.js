@@ -1,7 +1,8 @@
 var map;
-var largeInfoWindow
+var largeInfoWindow;
 var markers = [];
 
+// Array with the initial locations.
 var initialLocations = [
   {
     title: 'Brandenburger Tor',
@@ -25,7 +26,9 @@ var initialLocations = [
   }
 ];
 
+// Function initMap is called by the google API callback.
 function initMap() {
+  // Definitions of some styles for the map.
   var styles = [
     {
       featureType: 'water',
@@ -104,6 +107,7 @@ function initMap() {
   ko.applyBindings(new ViewModel());
 };
 
+// Location class
 var Location = function(data) {
   var self = this;
 
@@ -148,51 +152,58 @@ var Location = function(data) {
     }
   });
 
+  // Creation of a nwe marker for each new Location.
   this.marker = new google.maps.Marker({
-      //map: map,
       position: this.location,
       title: this.title,
       icon: defaultIcon,
       animation: google.maps.Animation.DROP,
   });
 
+  // Event listener for click on marker -> runs populateInfoWindow function.
   this.marker.addListener('click', function() {
     populateInfoWindow(this, self.wikiArticles, largeInfoWindow);
   });
 
+  // Event listener for mouseover on marker -> runs setIcon function.
   this.marker.addListener('mouseover', function() {
     this.setIcon(highlightedIcon);
   });
 
+  // Event listener for mouseout on marker -> runs setIcon function.
   this.marker.addListener('mouseout', function() {
     this.setIcon(defaultIcon);
   });
 
+  // function for showInfoWindow when marker is clicked.
   this.showInfoWindow = function() {
     google.maps.event.trigger(self.marker, 'click');
   };
 
+  // function for highlightMarker when mouseover marker.
   this.highlightMarker = function() {
     google.maps.event.trigger(self.marker, 'mouseover');
   };
 
+  // function for lowlightMarker when mouseout on marker.
   this.lowlightMarker = function() {
     google.maps.event.trigger(self.marker, 'mouseout');
   };
 }
 
+// The ViewModel.
 var ViewModel = function() {
   var self = this;
 
-  this.locationList = ko.observableArray([]);
+  this.locationList = ko.observableArray([]); // Define an ko.observable array for the locationList...
 
-  initialLocations.forEach(function(locationItem) {
+  initialLocations.forEach(function(locationItem) { // ... and push each of the initialLocations with a new Location Class item to the array.
     self.locationList.push(new Location(locationItem));
   });
 
   this.filterInput = ko.observable('');
 
-
+  // Function for the filter. Data-bind within the list class allows for display of filtered items only.
   this.filterList = ko.computed(function() {
     var filterItem = this.filterInput().toLowerCase();
     if (!filterItem) {
@@ -217,6 +228,7 @@ var ViewModel = function() {
     }, this);
 };
 
+// Function for changing the marker color.
 function makeMarkerIcon(markerColor) {
   var markerImage = new google.maps.MarkerImage(
     'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|' + markerColor +
@@ -228,6 +240,7 @@ function makeMarkerIcon(markerColor) {
   return markerImage;
 };
 
+// Function for populating the InfoWindow with content.
 function populateInfoWindow(marker, wikiArticles, infowindow) {
   if (infowindow.marker != marker) {
     infowindow.marker = marker;
@@ -238,6 +251,7 @@ function populateInfoWindow(marker, wikiArticles, infowindow) {
     var streetViewService = new google.maps.StreetViewService();
     var radius = 50;
 
+    // Function to getStreetView details and set the InfoWindow content.
     function getStreetView(data, status) {
       if (status == google.maps.StreetViewStatus.OK) {
         var nearStreetViewLocation = data.location.latLng;
@@ -262,6 +276,7 @@ function populateInfoWindow(marker, wikiArticles, infowindow) {
   }
 };
 
+// Function for displaying an error message if the Google Maps API cannot be accessed.
 function googleError() {
   alert('There went something wrong when loading Google Maps - please try again!');
 }
